@@ -143,7 +143,7 @@ export default function Trips() {
                                 </Button>
                                 <br />
 
-                                {trip.criador === 4 && (
+                                {trip.criador === 9 && (
                                     <Button variant="danger" className="w-auto mt-2" onClick={() => deleteTrip(trip.id)}>
                                         Cancelar Viagem
                                     </Button>
