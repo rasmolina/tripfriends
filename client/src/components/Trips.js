@@ -48,13 +48,13 @@ export default function Trips() {
     const joinTrip = (tripId, organizer) => {
         //const userId = localStorage.getItem('userId');
         const userId = 4;
-    
+
         // Faz a requisição para adicionar o usuário à viagem
         axios.post(`http://localhost:3001/trips/${tripId}/join`, { viajante_id: userId })
             .then(response => {
                 fetchTrips();
                 // Atualiza o estado ou realiza outras ações conforme necessário
-                toast.success(`Legal, você vai viajar com ${organizer}!`, { position: 'top-right',autoClose: 2000 });
+                toast.success(`Legal, você vai viajar com ${organizer}!`, { position: 'top-right', autoClose: 2000 });
             })
             .catch(error => {
                 console.error('Erro ao se juntar à viagem:', error);
@@ -62,23 +62,23 @@ export default function Trips() {
                     // Verifica se a mensagem de erro contém uma indicação de violação de chave primária
                     const errorMsg = error.response.data.msg;
                     if (errorMsg.includes('Viagem já possui esse viajante')) {
-                        toast.error('Você já se juntou nessa viagem!', { position: 'top-right',autoClose: 1000 });
+                        toast.error('Você já se juntou nessa viagem!', { position: 'top-right', autoClose: 1000 });
                     } else {
-                        toast.error('Erro ao se juntar à viagem :(', { position: 'top-right',autoClose: 1000 });
+                        toast.error('Erro ao se juntar à viagem :(', { position: 'top-right', autoClose: 1000 });
                     }
                 } else {
-                    toast.error('Erro desconhecido :(', { position: 'top-right',autoClose: 1000 });
+                    toast.error('Erro desconhecido :(', { position: 'top-right', autoClose: 1000 });
                 }
             });
     };
-    
+
 
     // Requisição para obter a lista de viajantes para a viagem específica
-    const loadViajantesList = (tripId,tripPais,tripCidade) => {
-        const dadosTrip = [tripPais," - ",tripCidade];
+    const loadViajantesList = (tripId, tripPais, tripCidade) => {
+        const dadosTrip = [tripPais, " - ", tripCidade];
         axios.get(`http://localhost:3001/tripviajantes/${tripId}`)
             .then(response => {
-                setViajantes(response.data);                
+                setViajantes(response.data);
                 setSelectedTrip(dadosTrip);
                 setShowModal(true);
             })
@@ -92,6 +92,21 @@ export default function Trips() {
         setSelectedTrip(null);
     };
 
+    const deleteTrip = (tripId) => {
+        const confirmDelete = window.confirm("Tem certeza de que deseja cancelar esta viagem?");
+        
+        if (confirmDelete) {
+            axios.delete(`http://localhost:3001/trip/delete/${tripId}`)
+                .then(response => {
+                    toast.warning('Que pena, sua viagem foi cancelada :(', { position: 'top-right', autoClose: 2000 });
+                    fetchTrips();
+                })
+                .catch(error => {
+                    console.error('Erro ao remover viagem!', error);
+                });
+        }
+    };
+    
 
 
 
@@ -110,22 +125,29 @@ export default function Trips() {
 
 
                                 <br />
-                                <strong>Data de Início:</strong> {format(new Date(trip.data_inicio), 'dd/MM/yyyy')}
+                                <strong>Data de Ida:</strong> {format(new Date(trip.data_inicio), 'dd/MM/yyyy')}
                                 <br />
-                                <strong>Data de Fim:</strong> {format(new Date(trip.data_fim), 'dd/MM/yyyy')}
+                                <strong>Data de Retorno:</strong> {format(new Date(trip.data_fim), 'dd/MM/yyyy')}
                                 <br />
                                 <strong>Local Hospedagem:</strong> {trip.local_hospedagem}
                             </Card.Text>
 
                             <div >
-                                <Button variant="primary" type="submit" className="w-auto mt-2" onClick={() => joinTrip(trip.id,trip.criador_nome)}>
+                                <Button variant="primary" type="submit" className="w-auto mt-2" onClick={() => joinTrip(trip.id, trip.criador_nome)}>
                                     Quero me juntar!
                                 </Button>
                                 <br />
 
-                                <Button variant="success" className="w-auto mt-2" onClick={() => loadViajantesList(trip.id,trip.país,trip.cidade)}>
+                                <Button variant="success" className="w-auto mt-2" onClick={() => loadViajantesList(trip.id, trip.país, trip.cidade)}>
                                     Ver viajantes
                                 </Button>
+                                <br />
+
+                                {trip.criador === 4 && (
+                                    <Button variant="danger" className="w-auto mt-2" onClick={() => deleteTrip(trip.id)}>
+                                        Cancelar Viagem
+                                    </Button>
+                                )}
                             </div>
                         </Card.Body>
                     </Card>

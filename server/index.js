@@ -52,6 +52,56 @@ db.getConnection((err) => {
       });
   });
 
+  //Remover viagem e seus viajantes associados
+  app.delete("/trip/delete/:id", (req, res) => {
+    const trip_id = req.params.id; // Corrigido para req.params.id
+    // Verifica se há viajantes associados à viagem antes de excluir
+    db.query("SELECT * FROM viajantes WHERE trip_id = ?", trip_id, (err, resultViajantes) => {
+        if (err) {
+            console.error("Erro ao verificar viajantes associados à viagem!" + err);
+            res.status(500).json({ error: 'Erro interno do servidor' });
+        } else {
+            if (resultViajantes.length > 0) {
+                // Se houver viajantes associados, exclua-os primeiro
+                db.query("DELETE FROM viajantes WHERE trip_id = ?", trip_id, (err, result) => {
+                    if (err) {
+                        console.error("Erro ao remover viajantes associados à viagem!" + err);
+                        res.status(500).json({ error: 'Erro interno do servidor' });
+                    } else {
+                        console.log("Viajantes associados à viagem removidos com sucesso!");
+                        // Agora, exclua a viagem
+                        deleteTrip(res, trip_id);
+                        console.log(res,trip_id);
+                    }
+                });
+            } else {
+                // Se não houver viajantes associados, exclua a viagem diretamente
+                deleteTrip(res, trip_id);
+                console.log(trip_id);
+            }
+        }
+    });
+});
+
+function deleteTrip(res, trip_id) {
+    db.query("DELETE FROM trip WHERE id = ?", trip_id, (err, result) => {
+        if (err) {
+            console.error("Erro ao remover viagem!" + err);
+            res.status(500).json({ error: 'Erro interno do servidor' });
+        } else {
+            if (result.affectedRows > 0) {
+                console.log("Viagem removida com sucesso!");
+                res.status(200).json({ msg: 'Remoção bem-sucedida!' });
+            } else {
+                console.log("Viagem não encontrada para remoção.");
+                res.status(404).json({ error: 'Viagem não encontrada.' });
+            }
+        }
+    });
+}
+
+
+
   //listar viagens
   app.get("/trips", (req, res) => {
     db.query("SELECT trip.*, users.nome as criador_nome FROM trip INNER JOIN users ON trip.criador = users.id ORDER BY trip.data_inicio", (err, result) => {

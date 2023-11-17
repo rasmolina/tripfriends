@@ -22,19 +22,22 @@ export default function RegisterTrip() {
 
     const handleCreateTrip = (e) => {
         e.preventDefault();
-        console.group(formData.data_inicio);
+        
+        if (new Date(formData.data_fim) < new Date(formData.data_inicio)) {
+            toast.error('Datas inválidas: A data de ida deve ser igual ou superior à data de retorno!', { position: 'top-right', autoClose: 3000 });
+            return;
+        }
+
         try {
-            axios.post("http://localhost:3001/trips", {
-                formData
-            });
+            axios.post("http://localhost:3001/trips", formData);
             toast.success('Viagem cadastrada com sucesso!', { position: 'top-right', autoClose: 2000 });
             navigate('/trips');
             console.log(localStorage.getItem('userId'));
-          } catch (error) {
+        } catch (error) {
             console.error('Erro ao criar viagem:', error);
-          }
-
+        }
     };
+    
 
     return (
         <>
@@ -47,7 +50,7 @@ export default function RegisterTrip() {
                             <h1 className="h1 mb-4 text-center">Tire sua viagem do papel!</h1>
                             <Form onSubmit={handleCreateTrip} className="login-form">
                                 <Form.Group>
-                                    <Form.Label>Data de Início:</Form.Label>
+                                    <Form.Label>Data de Ida:</Form.Label>
                                     <Form.Control
                                         type="date"
                                         required
@@ -59,7 +62,7 @@ export default function RegisterTrip() {
                                 </Form.Group>
 
                                 <Form.Group>
-                                    <Form.Label className='text-left'>Data de Fim:</Form.Label>
+                                    <Form.Label className='text-left'>Data de Retorno:</Form.Label>
                                     <Form.Control
                                         type="date"
                                         required
