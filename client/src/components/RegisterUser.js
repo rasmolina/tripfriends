@@ -30,13 +30,13 @@ export default function RegisterUser() {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:3001/register', formData);
-            if (response.status === 200) {
-                toast.success('Cadastro efetuado com sucesso, faça login para continuar!', { position: 'top-right', autoClose: 2000 });
+            if (response.data.resultQuery && response.data.resultQuery !== -1) {
+                toast.success('Viajante cadastrado com sucesso, faça login para continuar!', { position: 'top-right', autoClose: 2000 });
                 navigate('/login');
 
             } else {
                 toast.error(response.data.msg || 'Erro desconhecido', { position: 'top-right', autoClose: 1000 });
-                navigate('/login');
+                
             }
         } catch (error) {
             toast.error('Erro ao conectar com o servidor!' + error, { position: 'top-right', autoClose: 1000 });

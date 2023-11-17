@@ -14,7 +14,7 @@ export default function RegisterTrip() {
     const [formData, setFormData] = useState({
         data_inicio: '',
         data_fim: '',
-        criador: 9,
+        criador: criador,
         país: '',
         cidade: '',
         local_hospedagem: '',

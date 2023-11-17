@@ -13,6 +13,8 @@ export default function Trips() {
     const [showModal, setShowModal] = useState(false);
     const [selectedTrip, setSelectedTrip] = useState([]);
 
+    const userId = localStorage.getItem('userId');
+
     useEffect(() => {
         fetchTrips();
         findViajante();
@@ -46,8 +48,7 @@ export default function Trips() {
 
     //Adicionar o usuário logado a uma viagem
     const joinTrip = (tripId, organizer) => {
-        //const userId = localStorage.getItem('userId');
-        const userId = 4;
+        
 
         // Faz a requisição para adicionar o usuário à viagem
         axios.post(`http://localhost:3001/trips/${tripId}/join`, { viajante_id: userId })
@@ -143,7 +144,7 @@ export default function Trips() {
                                 </Button>
                                 <br />
 
-                                {trip.criador === 9 && (
+                                {trip.criador == userId && (
                                     <Button variant="danger" className="w-auto mt-2" onClick={() => deleteTrip(trip.id)}>
                                         Cancelar Viagem
                                     </Button>

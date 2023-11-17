@@ -24,10 +24,12 @@ export default function Login() {
 
         try {
             const response = await axios.post('http://localhost:3001/login', formData);
-            if (response.status === 200) {
+            console.log("userId do server: " + response.data.userId);
+            if (response.data.userId && response.data.userId !== -1) {
                 toast.success('Login efetuado com sucesso!', { position: 'top-right',autoClose: 1000 });
                 navigate('/home');
                 localStorage.setItem('userId', response.data.userId);
+                console.log(localStorage.getItem('userId'));
             } else {
                 toast.error(response.data.msg || 'Erro desconhecido', { position: 'top-right', autoClose: 1000 });
                 navigate('/login');
@@ -64,7 +66,7 @@ export default function Login() {
               </Form.Group>
 
               <Form.Group controlId="formBasicPassword">
-                <Form.Label>Password</Form.Label>
+                <Form.Label>Senha</Form.Label>
                 <Form.Control
                   type="password"
                   placeholder="Digite sua senha"
