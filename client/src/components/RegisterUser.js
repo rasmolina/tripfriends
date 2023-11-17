@@ -30,7 +30,7 @@ export default function RegisterUser() {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:3001/register', formData);
-            if (response.data.resultQuery && response.data.resultQuery !== -1) {
+            if (response.data.resultQuery !== -1) {
                 toast.success('Viajante cadastrado com sucesso, faça login para continuar!', { position: 'top-right', autoClose: 2000 });
                 navigate('/login');
 
