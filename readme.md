@@ -29,5 +29,16 @@ A API do backend foi construída utilizando Node Express com auxílio das biblio
 ## Frontend
 O frontend foi desenvolvido em React JS utilizando as bibliotecas axios para comunicação com API, react-bootstrap para estilização das folhas de estilo, toast para notificações mais elegantes e react-router-dom para manipulação das rotas.
 
+### Instruções de execução (terminal)
+Backend na pasta server:
+```sh
+npm run server
+```
+Frontend na pasta cliente
+```sh
+npm start
+```
+
+
 ## Desenvolvedores
 Roberto Augusto Silva Molina | Vinicius Meyer Laroza
